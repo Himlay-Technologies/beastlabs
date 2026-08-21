@@ -1,0 +1,177 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0a0a0b;
+  --chalk: #f2efe6;
+  --smoke: #8d8b87;
+  --sandstone: #d9a441;
+  --impact: #e5433d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--ink);
+  color: var(--chalk);
+  overflow-x: hidden;
+}
+
+/* ---------- Film grain atmosphere ---------- */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- Liquid glass surface ---------- */
+.glass {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(242, 239, 230, 0.09),
+    rgba(242, 239, 230, 0.03)
+  );
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(242, 239, 230, 0.14);
+  border-radius: 24px;
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.08) inset,
+    0 30px 60px -25px rgba(0, 0, 0, 0.6);
+}
+
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    140deg,
+    rgba(242, 239, 230, 0.35),
+    rgba(242, 239, 230, 0) 35%,
+    rgba(242, 239, 230, 0) 65%,
+    rgba(242, 239, 230, 0.18)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* subtle liquid sheen sweep on hover */
+.glass-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.glass-sheen::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.16),
+    transparent
+  );
+  transform: rotate(8deg);
+  transition: left 900ms ease;
+}
+.group:hover .glass-sheen::after {
+  left: 130%;
+}
+
+/* ---------- 3D tilt ---------- */
+.tilt {
+  transform-style: preserve-3d;
+  transition: transform 120ms ease-out;
+  will-change: transform;
+}
+
+/* ---------- Eyebrow label ---------- */
+.eyebrow {
+  letter-spacing: 0.28em;
+}
+
+/* ---------- Crack signature line ---------- */
+.crack-path {
+  stroke-dasharray: 2400;
+  stroke-dashoffset: 2400;
+  animation: draw-crack linear both;
+  animation-timeline: view();
+  animation-range: 0vh 90vh;
+}
+@keyframes draw-crack {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Fallback for browsers without animation-timeline (progressive enhancement) */
+@supports not (animation-timeline: view()) {
+  .crack-path {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------- Chalk texture patch ---------- */
+.chalk-texture {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(242,239,230,0.10) 0, transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(242,239,230,0.07) 0, transparent 45%),
+    radial-gradient(circle at 40% 80%, rgba(242,239,230,0.05) 0, transparent 35%);
+}
+
+/* ---------- Canvas weave texture (boxing) ---------- */
+.canvas-texture {
+  background-image:
+    repeating-linear-gradient(45deg, rgba(229,67,61,0.06) 0 2px, transparent 2px 14px),
+    repeating-linear-gradient(-45deg, rgba(229,67,61,0.05) 0 2px, transparent 2px 14px);
+}
+
+::selection {
+  background: var(--sandstone);
+  color: var(--ink);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--ink);
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2c;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .crack-path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
